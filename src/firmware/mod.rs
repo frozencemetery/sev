@@ -1,8 +1,8 @@
 #[cfg(target_os = "linux")]
 mod linux;
 
-use std::fmt::Debug;
 use super::*;
+use std::fmt::Debug;
 
 use bitflags::bitflags;
 

@@ -13,15 +13,22 @@ pub struct PubKey {
 
 impl std::fmt::Debug for PubKey {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "PubKey {{ group: {:?}, x: {:?}, y: {:?} }}",
-                self.g, self.x.iter(), self.y.iter())
+        write!(
+            f,
+            "PubKey {{ group: {:?}, x: {:?}, y: {:?} }}",
+            self.g,
+            self.x.iter(),
+            self.y.iter()
+        )
     }
 }
 
 impl Eq for PubKey {}
 impl PartialEq for PubKey {
     fn eq(&self, other: &PubKey) -> bool {
-        self.g == other.g && self.x[..] == other.x[..] && self.y[..] == other.y[..]
+        self.g == other.g
+            && self.x[..] == other.x[..]
+            && self.y[..] == other.y[..]
     }
 }
 
@@ -34,7 +41,7 @@ impl TryFrom<&PubKey> for ec::EcKey<pkey::Public> {
         Ok(ec::EcKey::from_public_key_affine_coordinates(
             &*ec::EcGroup::try_from(value.g)?,
             &*bn::BigNum::from_le(&value.x[..s])?,
-            &*bn::BigNum::from_le(&value.y[..s])?
+            &*bn::BigNum::from_le(&value.y[..s])?,
         )?)
     }
 }
@@ -58,14 +65,22 @@ impl TryFrom<&ec::EcKey<pkey::Private>> for PubKey {
         let mut x = bn::BigNum::new()?;
         let mut y = bn::BigNum::new()?;
 
-        value.public_key().affine_coordinates_gfp(g, &mut x, &mut y, &mut c)?;
-        Ok(Self { g: group::Group::try_from(g)?, x: x.into_le(), y: y.into_le() })
+        value
+            .public_key()
+            .affine_coordinates_gfp(g, &mut x, &mut y, &mut c)?;
+        Ok(Self {
+            g: group::Group::try_from(g)?,
+            x: x.into_le(),
+            y: y.into_le(),
+        })
     }
 }
 
 #[cfg(feature = "openssl")]
 impl PubKey {
-    pub fn generate(group: group::Group) -> Result<(Self, ec::EcKey<pkey::Private>)> {
+    pub fn generate(
+        group: group::Group,
+    ) -> Result<(Self, ec::EcKey<pkey::Private>)> {
         let grp: ec::EcGroup = group.try_into()?;
         let prv = ec::EcKey::generate(&*grp)?;
         Ok((Self::try_from(&prv)?, prv))

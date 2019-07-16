@@ -1,5 +1,5 @@
 #[cfg(feature = "openssl")]
-use { super::*, openssl::ecdsa };
+use {super::*, openssl::ecdsa};
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -10,7 +10,12 @@ pub struct Signature {
 
 impl std::fmt::Debug for Signature {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Signature {{ r: {:?}, s: {:?} }}", self.r.iter(), self.s.iter())
+        write!(
+            f,
+            "Signature {{ r: {:?}, s: {:?} }}",
+            self.r.iter(),
+            self.s.iter()
+        )
     }
 }
 
@@ -23,7 +28,10 @@ impl PartialEq for Signature {
 
 impl Default for Signature {
     fn default() -> Self {
-        Signature { r: [0u8; 72], s: [0u8; 72] }
+        Signature {
+            r: [0u8; 72],
+            s: [0u8; 72],
+        }
     }
 }
 

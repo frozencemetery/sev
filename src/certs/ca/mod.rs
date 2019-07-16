@@ -18,11 +18,13 @@ impl Usage {
 impl TryFrom<super::Usage> for Usage {
     type Error = ();
 
-    fn try_from(value: super::Usage) -> std::result::Result<Self, Self::Error> {
+    fn try_from(
+        value: super::Usage,
+    ) -> std::result::Result<Self, Self::Error> {
         Ok(match value {
             super::Usage::ARK => Usage::ARK,
             super::Usage::ASK => Usage::ASK,
-            _ => Err(())?
+            _ => Err(())?,
         })
     }
 }

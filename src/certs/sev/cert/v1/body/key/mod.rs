@@ -21,12 +21,21 @@ pub struct PubKey {
 impl std::fmt::Debug for PubKey {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self.algo {
-            Algorithm::RSA_SHA256 | Algorithm::RSA_SHA384 =>
-                write!(f, "PubKey {{ usage: {:?}, algo: {:?}, key: {:?} }}",
-                        self.usage, self.algo, unsafe { self.key.rsa } ),
+            Algorithm::RSA_SHA256 | Algorithm::RSA_SHA384 => write!(
+                f,
+                "PubKey {{ usage: {:?}, algo: {:?}, key: {:?} }}",
+                self.usage,
+                self.algo,
+                unsafe { self.key.rsa }
+            ),
 
-            _ => write!(f, "PubKey {{ usage: {:?}, algo: {:?}, key: {:?} }}",
-                        self.usage, self.algo, unsafe { self.key.ecc } ),
+            _ => write!(
+                f,
+                "PubKey {{ usage: {:?}, algo: {:?}, key: {:?} }}",
+                self.usage,
+                self.algo,
+                unsafe { self.key.ecc }
+            ),
         }
     }
 }
@@ -37,8 +46,9 @@ impl PartialEq for PubKey {
         self.usage == other.usage
             && self.algo == other.algo
             && match self.algo {
-                Algorithm::RSA_SHA256 | Algorithm::RSA_SHA384 =>
-                    unsafe { self.key.rsa == other.key.rsa },
+                Algorithm::RSA_SHA256 | Algorithm::RSA_SHA384 => unsafe {
+                    self.key.rsa == other.key.rsa
+                },
                 _ => unsafe { self.key.ecc == other.key.ecc },
             }
     }
@@ -64,7 +74,12 @@ impl TryFrom<&PubKey> for PublicKey<Usage> {
     fn try_from(value: &PubKey) -> Result<Self> {
         let hash = value.algo.try_into()?;
         let key = value.try_into()?;
-        Ok(Self { hash, key, id: None, usage: value.usage })
+        Ok(Self {
+            hash,
+            key,
+            id: None,
+            usage: value.usage,
+        })
     }
 }
 
@@ -83,8 +98,17 @@ impl PubKey {
         let prv = pkey::PKey::from_ec_key(prv)?;
 
         Ok((
-            Self { usage, algo, key: PubKeys { ecc: key } },
-            PrivateKey { usage, key: prv, id: None, hash: algo.try_into()? }
+            Self {
+                usage,
+                algo,
+                key: PubKeys { ecc: key },
+            },
+            PrivateKey {
+                usage,
+                key: prv,
+                id: None,
+                hash: algo.try_into()?,
+            },
         ))
     }
 }

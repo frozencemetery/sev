@@ -20,13 +20,15 @@ impl Usage {
 impl TryFrom<super::Usage> for Usage {
     type Error = ();
 
-    fn try_from(value: super::Usage) -> std::result::Result<Self, Self::Error> {
+    fn try_from(
+        value: super::Usage,
+    ) -> std::result::Result<Self, Self::Error> {
         Ok(match value {
             super::Usage::OCA => Usage::OCA,
             super::Usage::CEK => Usage::CEK,
             super::Usage::PEK => Usage::PEK,
             super::Usage::PDH => Usage::PDH,
-            _ => Err(())?
+            _ => Err(())?,
         })
     }
 }
