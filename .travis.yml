@@ -10,3 +10,6 @@ matrix:
 script:
   - cargo test --verbose
   - cargo test --verbose --features=openssl
+  - rustup install nightly
+  - rustup component add rustfmt --toolchain nightly
+  - cargo +nightly fmt --all -- --check
